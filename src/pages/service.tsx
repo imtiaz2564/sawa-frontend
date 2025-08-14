@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, ChangeEvent } from "react";
+import { useRouter } from "next/router";
 
 export default function CreateServiceRequest() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     jobTitle: "",
@@ -131,7 +133,7 @@ export default function CreateServiceRequest() {
       });
 
       if (res.ok) {
-        alert("Submitted!");
+        router.push("/serviceList");
       } else {
         const errorText = await res.text();
         console.error("Submission error:", res.status, errorText);
@@ -154,7 +156,7 @@ export default function CreateServiceRequest() {
     type?: string;
     placeholder?: string;
     required?: boolean;
-    onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+    // onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
     value?: string;
   }) => (
     <div className="mb-4">
@@ -234,7 +236,7 @@ export default function CreateServiceRequest() {
             <Input label="Serial Number" name="serialNumber" />
             {formData.machineLocation.map((loc, i) => (
               <Input
-                key={i}
+                // key={i}
                 label={`Machine Location ${i + 1}`}
                 name={`machineLocation-${i}` as any} // dummy name for uniqueness, won't be used in formData
                 value={loc}
@@ -250,14 +252,14 @@ export default function CreateServiceRequest() {
             </button>
 
             {/* Display machine locations list */}
-            <div className="mt-4">
+            {/* <div className="mt-4">
               <strong>Machine Locations:</strong>
               <ul className="list-disc list-inside">
                 {formData.machineLocation.map((loc, i) => (
                   <li key={i}>{loc || "(empty)"}</li>
                 ))}
               </ul>
-            </div>
+            </div> */}
 
             <ButtonGroup onNext={handleNext} />
           </div>

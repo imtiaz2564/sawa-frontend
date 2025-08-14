@@ -3,100 +3,88 @@ import Link from "next/link";
 
 const ITEMS_PER_PAGE = 5;
 
-interface ServiceRequest {
+interface Profile {
   id: number;
-  job_title: string;
-  machine_type: string;
-  serial_number: string;
+  company_name: string;
+  contact_name: string;
+  industry: string;
 }
 
-export default function ServiceRequestList() {
-  const [requests, setRequests] = useState<ServiceRequest[]>([]);
+export default function ProfileList() {
+  const [profiles, setProfiles] = useState<Profile[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    const fetchRequests = async () => {
+    const fetchProfiles = async () => {
       try {
-        const res = await fetch(
-          "http://localhost:8000/api/service-request/list/"
-        );
+        const res = await fetch("http://localhost:8000/api/profile/list/");
         const data = await res.json();
-        setRequests(data);
+        setProfiles(data);
       } catch (error) {
-        console.error("Failed to load service requests", error);
+        console.error("Failed to load profiles", error);
       }
     };
 
-    fetchRequests();
+    fetchProfiles();
   }, []);
 
-  const totalPages = Math.ceil(requests.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(profiles.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentRequests = requests.slice(
+  const currentProfiles = profiles.slice(
     startIndex,
     startIndex + ITEMS_PER_PAGE
   );
-
-  // Example handler (you can replace with actual POST or navigation)
-  const handleApply = (id: number) => {
-    console.log("Apply clicked for request ID:", id);
-    // You could redirect, show a modal, or trigger an API call here
-  };
 
   return (
     <div className="p-6 max-w-5xl mx-auto bg-white shadow rounded-lg">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-semibold text-center flex-grow">
-          Service Requests
+          Profiles
         </h1>
-
-        <Link href="/service">
+        <Link href="/profile">
           <button className="ml-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
-            Create Service
+            Create Profile
           </button>
         </Link>
       </div>
 
-      {requests.length === 0 ? (
-        <p className="text-center text-gray-500">No service requests found.</p>
+      {profiles.length === 0 ? (
+        <p className="text-center text-gray-500">No profiles found.</p>
       ) : (
         <>
           <table className="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-md">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Job Title
+                  Company
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Machine Type
+                  Contact
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Serial Number
+                  Industry
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Action
-                </th>
+                <th className="px-6 py-3"></th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {currentRequests.map((req) => (
-                <tr key={req.id}>
+              {currentProfiles.map((profile) => (
+                <tr key={profile.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {req.job_title}
+                    {profile.company_name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {req.machine_type}
+                    {profile.contact_name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {req.serial_number}
+                    {profile.industry}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <button
-                      onClick={() => handleApply(req.id)}
-                      className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
-                    >
-                      Apply
-                    </button>
+                  <td className="px-6 py-4 text-right">
+                    <Link href={`/profile/${profile.id}`}>
+                      <button className="text-blue-600 hover:underline text-sm">
+                        View
+                      </button>
+                    </Link>
                   </td>
                 </tr>
               ))}
