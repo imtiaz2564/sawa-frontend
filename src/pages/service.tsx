@@ -156,8 +156,8 @@ export default function CreateServiceRequest() {
     type?: string;
     placeholder?: string;
     required?: boolean;
-    // onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
     value?: string;
+    onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   }) => (
     <div className="mb-4">
       {label && (
@@ -165,21 +165,28 @@ export default function CreateServiceRequest() {
           {label}
         </label>
       )}
-      <input
-        type={type}
-        name={name}
-        value={
-          // For file inputs, do not pass value prop
-          type === "file" ? undefined : formData[name] ?? ""
-        }
-        onChange={
-          props.onChange
-            ? props.onChange
-            : (e) => handleChange(e as ChangeEvent<HTMLInputElement>)
-        }
-        className="w-full border border-gray-300 p-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        {...props}
-      />
+      {type === "file" ? (
+        <input
+          type={type}
+          name={name}
+          onChange={props.onChange}
+          className="w-full border border-gray-300 p-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          {...props}
+        />
+      ) : (
+        <input
+          type={type}
+          name={name}
+          value={typeof formData[name] === "string" ? formData[name] : ""}
+          onChange={
+            props.onChange
+              ? props.onChange
+              : (e) => handleChange(e as ChangeEvent<HTMLInputElement>)
+          }
+          className="w-full border border-gray-300 p-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          {...props}
+        />
+      )}
     </div>
   );
 
